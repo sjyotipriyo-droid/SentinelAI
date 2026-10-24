@@ -1,282 +1,391 @@
 <div align="center">
 
-# SentinelAI
+# 🛡️ SentinelAI — Autonomous Tier-3 SOC Threat Hunter & SIEM Dashboard
 
-**Real-time threat analysis that turns SOC-grade signals into plain-English decisions.**
+**Feed it raw web server logs. Get back the attackers, the MITRE ATT&CK mapping, and the firewall rules to stop them.**
 
-<br>
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://sentinel-ai-theta-cyan.vercel.app/)
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Next.js 16](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Google Gemini](https://img.shields.io/badge/Google%20Gemini-AI-8E75B2?style=for-the-badge&logo=googlegemini&logoColor=white)](https://ai.google.dev/)
+[![MITRE ATT&CK](https://img.shields.io/badge/MITRE-ATT%26CK-E32636?style=for-the-badge)](https://attack.mitre.org/)
 
-[![Live Status](https://img.shields.io/website?url=https%3A%2F%2Fsentinel-ai-theta-cyan.vercel.app%2F&label=live&up_message=online&down_message=offline&style=for-the-badge)](https://sentinel-ai-theta-cyan.vercel.app/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-59.0%25-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](#language-breakdown)
-[![Python](https://img.shields.io/badge/Python-37.5%25-3776AB?style=for-the-badge&logo=python&logoColor=white)](#language-breakdown)
-[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://sentinel-ai-theta-cyan.vercel.app/)
-[![OWASP Hardened](https://img.shields.io/badge/OWASP-Hardened-1F6FEB?style=for-the-badge&logo=owasp&logoColor=white)](#under-the-hood-security-hardening--defensive-engineering)
-
-<br>
-
-[![Launch SentinelAI](https://img.shields.io/badge/LAUNCH-SentinelAI_Live_App-00B386?style=for-the-badge&logoColor=white)](https://sentinel-ai-theta-cyan.vercel.app/)
+[Live Demo](https://sentinel-ai-theta-cyan.vercel.app/) · [Source Code](https://github.com/sjyotipriyo-droid/SentinelAI)
 
 </div>
 
 ---
 
-## Overview: Why SentinelAI?
+## 🌟 What is SentinelAI?
 
-**In simple terms:** you give SentinelAI something suspicious, and it tells you whether it looks dangerous, why it looks that way, and what to do about it. No security background required.
+### The plain-English version
 
-**Why it exists:** professional security tools are built for analysts who already know how to read raw alerts, logs, and indicators. Everyone else gets a wall of jargon or nothing at all. SentinelAI closes that gap. It runs the kind of pattern-based analysis a Security Operations Center (SOC) relies on and explains the result clearly enough that a beginner can act on it and an analyst can still trust it.
+Every time someone visits a website, the web server writes one line in a text file: who asked (their IP address), when, what they asked for, and whether the server said yes or no. That file is the **server access log**. A busy site produces thousands of these lines every hour.
 
-**What it does:**
+Hidden in those lines are the footprints of attackers: someone trying to trick the database, someone hunting for files they shouldn't see, someone guessing passwords. Finding them by eye is like watching days of security-camera footage to spot one burglar.
 
-- Analyzes inputs for threats, vulnerabilities, and malicious patterns
-- Scores severity and explains the reasoning behind each verdict
-- Returns structured, actionable security intelligence in real time
-- Presents everything in a dark-mode, SOC-style dashboard that works on desktop and mobile
+That is the daily job of a **SOC (Security Operations Center)**: a team that watches for attacks. They use a **SIEM (Security Information and Event Management)** dashboard to collect and display security data in one place. The trouble is **alert fatigue**: when tools raise too many alerts, analysts drown in noise and real attacks get missed.
 
----
+**SentinelAI acts as an automated cyber detective and AI incident responder.** It reads your raw logs, picks out the genuine attack patterns, finds out who the attackers are, and writes a ready-to-use incident report with the exact commands to block them.
 
-## Try It Live: 30-Second Beginner's Walkthrough
+> ### ⚡ Try It Live
+> Open **https://sentinel-ai-theta-cyan.vercel.app/** to see the SIEM dashboard in action.
 
-You do not need to install anything or write any code.
+<details>
+<summary><b>New to this? Quick glossary</b></summary>
 
-**Step 1 - Open the app.**
-Click the launch button below. The dashboard loads in your browser.
+<br>
 
-[![Open SentinelAI](https://img.shields.io/badge/Open-sentinel--ai--theta--cyan.vercel.app-00B386?style=flat-square)](https://sentinel-ai-theta-cyan.vercel.app/)
-
-**Step 2 - Paste a sample input.**
-Copy one of the harmless test inputs below into the analysis box and submit it.
-
-| Try this | What it simulates |
+| Term | Plain meaning |
 |---|---|
-| `http://secure-login-paypa1.com/verify?account=update` | A phishing-style link with a lookalike domain |
-| `<script>alert(1)</script>` | A classic script-injection test string |
-| `https://github.com` | A normal, legitimate address, for comparison |
+| **Access log** | A text file where the web server records every request it receives |
+| **SOC** | Security Operations Center: the team that monitors and responds to attacks |
+| **SIEM** | A dashboard that gathers security data from many sources in one place |
+| **Tier-3 analyst** | The most senior SOC role: threat hunting, deep investigation, and writing the fix |
+| **MITRE ATT&CK** | A public catalog of real attacker techniques, each with an ID like `T1190` |
+| **IOC** | Indicator of Compromise: a clue such as a malicious IP or a suspicious URL |
+| **ASN** | Autonomous System Number: identifies the network (often a hosting provider) behind an IP |
+| **WAF** | Web Application Firewall: filters malicious web requests before they reach your app |
+| **TLP** | Traffic Light Protocol: a label (RED, AMBER, GREEN, CLEAR) saying how widely a report can be shared |
 
-These are standard demonstration strings. Nothing here is harmful to run.
+</details>
 
-**Step 3 - Read the result.**
-Every analysis comes back in the same shape, so you can learn to read it once and reuse that skill:
+<details>
+<summary><b>Anatomy of one log line</b></summary>
 
-- **Severity:** how risky the input looks, from low to high
-- **Why it was flagged:** the specific patterns or indicators that triggered the verdict
-- **What to do next:** plain-language recommended actions
+<br>
 
-Try the suspicious samples first, then the clean one. Seeing the difference is the fastest way to understand what the tool is looking for.
+````text
+203.0.113.45 - - [24/Oct/2026:02:14:07 +0000] "GET /products.php?id=1 HTTP/1.1" 200 5123 "-" "Mozilla/5.0"
+|            |   |                             |                                |   |    |   |
+|            |   |                             |                                |   |    |   +-- User-Agent (client software)
+|            |   |                             |                                |   |    +------ Referrer
+|            |   |                             |                                |   +----------- Response size (bytes)
+|            |   |                             |                                +--------------- HTTP status code
+|            |   |                             +-------------------------------------------- Request (method, path, query)
+|            |   +-------------------------------------------------------------------------- Timestamp
+|            +------------------------------------------------------------------------------ Identity fields (usually "-")
++------------------------------------------------------------------------------------------ Client IP address
+````
+
+</details>
 
 ---
 
-## Key Features & Threat Intelligence Capabilities
+## 🏗️ System Architecture & Threat Hunting Workflow
 
-| Capability | What it gives you |
-|---|---|
-| **Real-time analysis** | Results return in seconds through a serverless Python analysis engine |
-| **Hybrid detection** | AI-assisted scoring combined with deterministic heuristics, so verdicts are explainable and not a black box |
-| **Malicious pattern recognition** | Detection of injection payloads, suspicious links, and common vulnerability indicators |
-| **Explainable output** | Every verdict includes the evidence behind it and a recommended response |
-| **Structured threat intelligence** | Consistent, typed results that are easy to read, compare, and build on |
-| **SOC-style dashboard** | A dark-mode, responsive interface built with Next.js and React |
-| **Hardened by default** | Strict CSP, security headers, input sanitization, and API rate limiting in production |
+SentinelAI runs as a five-stage pipeline, from raw telemetry to enforceable remediation.
+
+````text
+ +---------------------------------+
+ |  RAW APACHE / NGINX ACCESS LOGS |
+ |  (unstructured text telemetry)  |
+ +----------------+----------------+
+                  |
+                  v
+ +------------------------------------------------+
+ |  STAGE 1: SIGNATURE & HEURISTIC ENGINE         |
+ |  - Regex parsing of the access log format      |
+ |  - Attack-pattern signatures per vector        |
+ |  - Behavioral heuristics (request frequency,   |
+ |    status-code sequences, repeated targets)    |
+ +----------------------+-------------------------+
+                        |  flagged events
+                        v
+ +------------------------------------------------+
+ |  STAGE 2: LIVE OSINT & MITRE ATT&CK MAPPER     |
+ |  - ip-api: geolocation, ISP, ASN per attacker  |
+ |  - Maps each vector to a MITRE technique ID    |
+ |    (T1190, T1083, T1059.007, T1110)            |
+ +----------------------+-------------------------+
+                        |  enriched incident data
+                        v
+ +------------------------------------------------+
+ |  STAGE 3: AUTONOMOUS GEMINI TIER-3 SOC ANALYST |
+ |  - Correlates events into an incident          |
+ |  - Judges impact from status codes and sizes   |
+ |  - Writes a TLP-graded IR report in Markdown   |
+ +----------------------+-------------------------+
+                        |
+                        v
+ +------------------------------------------------+
+ |  STAGE 4: REMEDIATION OUTPUT                   |
+ |  +----------------------+ +------------------+ |
+ |  | Firewall rules       | | WAF + code fixes | |
+ |  | iptables / ufw DROP  | | ModSecurity      | |
+ |  |                      | | SecRule patches  | |
+ |  +----------------------+ +------------------+ |
+ +------------------------------------------------+
+
+ Delivered through two interchangeable front ends:
+   [ Python CLI (rich terminal UI) ]   [ Next.js SIEM web dashboard ]
+````
 
 ---
 
-## System Architecture & Language Breakdown
+## 🔍 Deep-Dive: Detected Threat Vectors & MITRE ATT&CK Matrix
 
-SentinelAI is a hybrid application. A strictly typed Next.js frontend handles interaction and presentation, and a Python engine handles the analysis. Vercel hosts both: the frontend as a Next.js app and the backend as serverless functions.
-
-```mermaid
-flowchart LR
-    U["User Input"] --> C
-
-    subgraph Client["Client - TypeScript / Next.js / React"]
-        C["Input Form and Client-side Validation"]
-        D["SOC-style Threat Dashboard"]
-    end
-
-    C --> G
-
-    subgraph Edge["Vercel Boundary - Hardened"]
-        G["Security Headers and CSP"]
-        R["Rate Limiting"]
-        S["Schema Validation and Sanitization"]
-    end
-
-    G --> R --> S --> N
-
-    subgraph Core["Python Analysis Engine - Serverless"]
-        N["Normalization and Parsing"]
-        H["Heuristic and AI Threat Scoring"]
-        T["Structured Threat Report"]
-    end
-
-    N --> H --> T --> D
-```
-
-### Language Breakdown
-
-```text
-TypeScript  ██████████████████████████████░░░░░░░░░░░░░░░░░░░░  59.0%
-Python      ███████████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  37.5%
-CSS         █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   1.8%
-JavaScript  █░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░   1.7%
-```
-
-| Language | Share | What it powers |
+| Threat vector | MITRE ATT&CK technique | Tactic focus |
 |---|---|---|
-| **TypeScript** | 59.0% | Next.js / React frontend, strict type-safety across the UI, request and response contracts, and the interactive security dashboard |
-| **Python** | 37.5% | Core backend intelligence: the AI and heuristic threat analysis engine and automated security scripts |
-| **CSS** | 1.8% | Modern, responsive dark-mode SOC-style interface |
-| **JavaScript** | 1.7% | Utility and configuration scripts |
+| **SQL Injection (SQLi)** | `T1190` Exploit Public-Facing Application | Initial Access |
+| **Directory Traversal / LFI** | `T1083` File and Directory Discovery | Discovery |
+| **Reflected Cross-Site Scripting (XSS)** | `T1059.007` Command and Scripting Interpreter: JavaScript | Execution |
+| **Credential Brute-Force / Stuffing** | `T1110` Brute Force | Credential Access |
 
-The split reflects the design. TypeScript keeps the user-facing layer predictable and safe to change, and Python keeps the detection logic where security tooling and analysis libraries are strongest.
+### How to read HTTP status codes during triage
 
-<details>
-<summary><b>Deep dive: the TypeScript-to-Python data pipeline</b></summary>
+| Code | Beginner meaning | What it signals to an analyst |
+|---|---|---|
+| `200` | "OK, here is what you asked for" | The request succeeded. For an attack, this is the most dangerous outcome and needs a closer look at response size |
+| `401` | "You are not authenticated" | A failed login. In volume, this is the signature of brute force |
+| `403` | "Forbidden" | The request was blocked by access rules or a WAF. The control worked |
+| `500` | "The server broke" | The input caused an unhandled error. Often seen when injection probes hit fragile code |
 
-<br>
+> Access logs record the **request** and its **status and size**, not the response body. These indicators suggest impact but do not prove it, so SentinelAI reports them as indicators and recommends verification.
 
-1. **Capture.** The Next.js client collects the input and applies first-pass validation (type, length, and format checks) so malformed requests never leave the browser.
-2. **Typed request.** The client sends the payload to a serverless API route over HTTPS using a typed contract, which keeps both sides of the pipeline in agreement about shape.
-3. **Boundary controls.** Before any analysis runs, the request passes through rate limiting and server-side schema validation. Client-side checks are treated as convenience, never as trust.
-4. **Sanitization and normalization.** The Python engine strips or neutralizes dangerous constructs and normalizes the input (encoding tricks, casing, whitespace) so detection operates on a canonical form and cannot be bypassed by obfuscation.
-5. **Detection.** Deterministic heuristics match known malicious patterns. AI-assisted scoring then weighs the combined signals and produces a severity and confidence assessment.
-6. **Structured report.** The engine returns a structured result: severity, confidence, matched indicators, a plain-language explanation, and recommended actions.
-7. **Render.** The dashboard validates the response against the expected type before rendering it. Output is escaped on display so analyzed content can never execute in the viewer's browser.
+### 1. SQL Injection (SQLi) · `T1190`
 
-Keeping heuristics and AI scoring side by side is intentional. Heuristics give repeatable, auditable verdicts, and the AI layer improves coverage on inputs that rules alone would miss.
+- **For beginners:** The attacker types database commands into a website's search box or URL to trick it into handing over data it shouldn't, such as usernames and passwords.
+- **For advanced engineers:** Look for `UNION SELECT`, `OR 1=1`, `information_schema`, `SLEEP(`, comment terminators (`--`, `#`), and URL-encoded quotes (`%27`) in query strings. Scanner user agents such as `sqlmap` are a strong secondary signal. A `500` often indicates error-based probing, a `403` indicates a block, and a `200` with a response size far larger than the same endpoint normally returns suggests data may have been extracted.
 
-</details>
+### 2. Directory Traversal / Local File Inclusion · `T1083`
 
----
+- **For beginners:** The attacker uses `../` (meaning "go up one folder") to climb out of the website's folder and read private files on the server, like password files.
+- **For advanced engineers:** Look for `../`, `..%2f`, `%2e%2e%2f`, double-encoded variants, and targets such as `/etc/passwd`, `/etc/shadow`, or `win.ini`. Pay attention to the status: a `200` with a plausible file-sized response to a traversal request should be treated as probable disclosure, while `403` and `404` indicate the request was rejected or the path did not exist.
 
-## Under the Hood: Security Hardening & Defensive Engineering
+### 3. Reflected Cross-Site Scripting (XSS) · `T1059.007`
 
-A security tool should hold itself to the standard it recommends. SentinelAI is built with these controls in production.
+- **For beginners:** The attacker crafts a link containing hidden JavaScript. If a victim clicks it, the site echoes the script back and the victim's browser runs it, which can steal their session.
+- **For advanced engineers:** Look for `<script>`, `%3Cscript%3E`, `onerror=`, `onload=`, and `javascript:` in query parameters. Because the payload executes client-side, the access log only shows the delivery attempt. A `200` indicates the page rendered, which is consistent with possible reflection, so verification requires testing the endpoint.
 
-| Control | Purpose |
-|---|---|
-| **Content Security Policy (CSP)** | Restricts which sources can load scripts, styles, and connections, limiting the impact of any injected content |
-| **HTTP security headers** | Hardens browser behavior against clickjacking, MIME sniffing, protocol downgrade, and unwanted referrer leakage |
-| **Input sanitization** | Defends against XSS and injection at the edge and again inside the Python engine |
-| **Schema validation** | Rejects malformed or unexpected payloads before they reach analysis logic |
-| **Rate limiting and API safety** | Reduces abuse, scraping, and resource exhaustion on the serverless endpoints |
-| **Output encoding** | Analyzed content is displayed as inert text and never interpreted as markup |
-| **Least-exposure design** | The API surface is kept small, and error responses avoid leaking internals |
+### 4. Credential Brute-Force / Stuffing · `T1110`
 
-### OWASP Top 10 Alignment
-
-| OWASP risk category | How SentinelAI addresses it |
-|---|---|
-| **Injection (including XSS)** | Layered validation, sanitization, and output encoding on both client and server |
-| **Security Misconfiguration** | Hardened headers and CSP applied by default in the deployed environment |
-| **Insecure Design** | Trust boundaries are explicit, and the client is never trusted to validate on its own |
-| **Vulnerable and Outdated Components** | Dependencies are kept minimal and managed through lockfiles |
-
-<details>
-<summary><b>Reference: security headers applied in production</b></summary>
-
-<br>
-
-| Header | Role |
-|---|---|
-| `Content-Security-Policy` | Controls permitted content sources and blocks inline and third-party script abuse |
-| `Strict-Transport-Security` | Forces HTTPS and prevents protocol downgrade |
-| `X-Content-Type-Options: nosniff` | Stops browsers from guessing content types |
-| `X-Frame-Options: DENY` | Prevents the app from being embedded in hostile frames |
-| `Referrer-Policy` | Limits URL information shared with other sites |
-| `Permissions-Policy` | Disables browser features the app does not need |
-
-</details>
+- **For beginners:** The attacker tries huge numbers of passwords, or stolen username/password pairs from other breaches, until one logs in.
+- **For advanced engineers:** Look for high-frequency `POST` requests from one source to login endpoints (`/login`, `/wp-login.php`, `/admin`), dominated by `401` responses. Rotating usernames from one IP points to credential stuffing. A run of `401`s followed by a `200` from the same IP is the key escalation signal, because it can mean a successful login. Relevant sub-techniques include `T1110.001` (password guessing) and `T1110.004` (credential stuffing).
 
 ---
 
-## Local Development Setup
+## 🧠 Autonomous AI Incident Response Engine
 
-<details>
-<summary><b>Expand for full installation instructions</b></summary>
+Once the detection engine has produced enriched incident data, **Google Gemini** takes the role of a **Tier-3 SOC Analyst** and writes a complete, **TLP-graded** incident response report in Markdown.
 
-<br>
+| Report section | What it contains |
+|---|---|
+| **Executive Breach Summary** | A short, non-technical summary of what happened, the likely impact, and the urgency, written for management |
+| **Attacker Geo / ASN Matrix** | Per attacker IP: country, city, ISP, ASN, and the attack vectors observed, enriched live through `ip-api` |
+| **Perimeter Containment** | Copy-paste `ufw` and `iptables` rules that drop traffic from the attacking IPs |
+| **Code-Level & WAF Patches** | Secure-coding fixes for the vulnerable endpoint, plus ModSecurity `SecRule` patches that block the pattern at the edge |
 
-**Prerequisites:** Node.js 18.18 or newer, Python 3.10 or newer, and `git`.
+> ⚠️ **Review before you apply.** AI-generated firewall and WAF rules are recommendations. Always check them before running them on a production server, so you don't block legitimate users or lock yourself out of your own machine.
 
-**1. Get the code**
+---
 
-Clone the repository from GitHub using the green **Code** button, then open a terminal in the project folder:
+## 🛠️ Dual-Engine Tech Stack Breakdown
 
-```bash
+| | **Engine 1: Python CLI Threat Hunter** | **Engine 2: Next.js SIEM Web Dashboard** |
+|---|---|---|
+| **Files** | `sentinel.py`, `analyzer.py`, `ai_agent.py` | `dashboard/` |
+| **Runtime** | Python 3.12 | Next.js 16, TypeScript, Node.js |
+| **Detection** | Regex and heuristic log analysis | Same detection logic, delivered through a web UI |
+| **OSINT** | `requests` for `ip-api` geolocation and ASN lookups | Server-side API routes |
+| **Interface** | `rich` terminal tables and panels | Tailwind CSS SIEM dashboard |
+| **AI** | `google-genai` (Gemini) | Google Gemini |
+| **Config** | `python-dotenv`, `.env` | `dashboard/.env.local` |
+| **Deployment** | Runs locally | Vercel (live) |
+
+````text
+SentinelAI/
+├── sentinel.py       # CLI entry point
+├── analyzer.py       # Signature and heuristic detection engine
+├── ai_agent.py       # Gemini Tier-3 SOC analyst
+└── dashboard/        # Next.js 16 full-stack SIEM web dashboard
+````
+
+---
+
+## 🚀 Complete Step-by-Step Local Installation & Usage
+
+### Prerequisites
+
+- [Git](https://git-scm.com/)
+- [Python 3.12](https://www.python.org/downloads/) for the CLI
+- [Node.js](https://nodejs.org/) and npm for the dashboard
+- A free [Google Gemini API key](https://aistudio.google.com/) for the AI analyst
+
+### Step 1: Clone the repository
+
+````bash
+git clone https://github.com/sjyotipriyo-droid/SentinelAI.git
 cd SentinelAI
-```
+````
 
-**2. Install frontend dependencies (TypeScript / Next.js)**
+### Step 2: Run the Python CLI
 
-```bash
-# with npm
+````bash
+# Install dependencies
+pip install requests rich python-dotenv google-genai
+````
+
+Create a file named `.env` in the project root:
+
+````env
+GEMINI_API_KEY=your_gemini_api_key
+````
+
+Run the CLI:
+
+````bash
+py sentinel.py              # Windows
+python3 sentinel.py         # macOS / Linux
+````
+
+Follow the on-screen prompts to provide an access log.
+
+### Step 3: Run the Next.js SIEM Dashboard
+
+````bash
+cd dashboard
 npm install
+````
 
-# or with pnpm
-pnpm install
-```
+Create `dashboard/.env.local`:
 
-**3. Set up the Python backend**
+````env
+GEMINI_API_KEY=your_gemini_api_key
+````
 
-```bash
-python -m venv .venv
+Start the server:
 
-# macOS / Linux
-source .venv/bin/activate
-
-# Windows (PowerShell)
-.venv\Scripts\Activate.ps1
-
-pip install -r requirements.txt
-```
-
-**4. Run the full stack (frontend and Python serverless functions)**
-
-```bash
-npm install -g vercel
-vercel dev
-```
-
-**5. Or run the frontend alone**
-
-```bash
+````bash
 npm run dev
-# or
-pnpm dev
-```
+````
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open **http://localhost:3000** in your browser.
 
-**Production build check**
+### Where do I find a real access log?
 
-```bash
-npm run build
-```
+| Server | Common default location |
+|---|---|
+| Apache (Debian / Ubuntu) | `/var/log/apache2/access.log` |
+| Apache (RHEL / CentOS) | `/var/log/httpd/access_log` |
+| Nginx | `/var/log/nginx/access.log` |
+
+<details>
+<summary><b>No server? Create a small test log</b></summary>
+
+<br>
+
+````bash
+cat > sample_access.log << 'EOF'
+203.0.113.45 - - [24/Oct/2026:02:14:07 +0000] "GET /products.php?id=1'%20UNION%20SELECT%20username,password%20FROM%20users-- HTTP/1.1" 200 5123 "-" "sqlmap/1.7"
+203.0.113.45 - - [24/Oct/2026:02:14:19 +0000] "GET /download?file=../../../../etc/passwd HTTP/1.1" 200 1847 "-" "Mozilla/5.0"
+198.51.100.23 - - [24/Oct/2026:02:15:02 +0000] "GET /search?q=%3Cscript%3Ealert(document.cookie)%3C/script%3E HTTP/1.1" 200 3320 "-" "Mozilla/5.0"
+192.0.2.77 - - [24/Oct/2026:02:16:41 +0000] "POST /wp-login.php HTTP/1.1" 401 1203 "-" "python-requests/2.31"
+192.0.2.77 - - [24/Oct/2026:02:16:42 +0000] "POST /wp-login.php HTTP/1.1" 401 1203 "-" "python-requests/2.31"
+192.0.2.77 - - [24/Oct/2026:02:16:44 +0000] "POST /wp-login.php HTTP/1.1" 200 4410 "-" "python-requests/2.31"
+EOF
+````
+
+The IP addresses above come from reserved documentation ranges, so they are safe to use in examples.
 
 </details>
 
----
-
-## Ethical Use & Responsible Disclosure
-
-SentinelAI is built for **defensive analysis, education, and authorized security testing**. Use it only on systems, applications, and data you own or have explicit written permission to assess. The authors do not condone and are not responsible for misuse, including unauthorized testing, attacks, or any illegal activity.
-
-If you find a security issue in SentinelAI itself, please report it responsibly:
-
-- Use the repository's **Security** tab to report the issue privately
-- Include clear reproduction steps and the potential impact
-- Allow reasonable time for a fix before any public disclosure
-
-Good-faith research and responsible reporting are welcome and appreciated.
+> 🔐 **Never commit `.env` or `dashboard/.env.local`.** Make sure both are listed in `.gitignore`.
 
 ---
 
-## Author & Connect
+## 📄 Sample Log Telemetry & Incident Report Preview
 
-**Jyotipriyo Saha**  
-Founder at Three Pixels | Cybersecurity Practitioner
+> The output below is illustrative. Exact results depend on your logs.
 
-SentinelAI was designed and built to make threat analysis understandable without watering it down. If you have feedback, ideas, or want to collaborate, open an issue or start a discussion on this repository.
+### Input: raw Apache access log
 
-[![Launch SentinelAI](https://img.shields.io/badge/Try_SentinelAI-Live_Now-00B386?style=for-the-badge)](https://sentinel-ai-theta-cyan.vercel.app/)
+````text
+203.0.113.45 - - [24/Oct/2026:02:14:07 +0000] "GET /products.php?id=1'%20UNION%20SELECT%20username,password%20FROM%20users-- HTTP/1.1" 200 5123 "-" "sqlmap/1.7"
+203.0.113.45 - - [24/Oct/2026:02:14:19 +0000] "GET /download?file=../../../../etc/passwd HTTP/1.1" 200 1847 "-" "Mozilla/5.0"
+192.0.2.77 - - [24/Oct/2026:02:16:41 +0000] "POST /wp-login.php HTTP/1.1" 401 1203 "-" "python-requests/2.31"
+192.0.2.77 - - [24/Oct/2026:02:16:42 +0000] "POST /wp-login.php HTTP/1.1" 401 1203 "-" "python-requests/2.31"
+192.0.2.77 - - [24/Oct/2026:02:16:44 +0000] "POST /wp-login.php HTTP/1.1" 200 4410 "-" "python-requests/2.31"
+````
+
+### Output: detected incidents
+
+| Source IP | Vector | MITRE ID | Key indicator | Triage |
+|---|---|---|---|---|
+| `203.0.113.45` | SQL Injection | `T1190` | `UNION SELECT`, `sqlmap` user agent, `200` with 5123 bytes | **Critical**: possible data extraction |
+| `203.0.113.45` | Directory Traversal / LFI | `T1083` | `../../../../etc/passwd`, `200` | **Critical**: possible file disclosure |
+| `192.0.2.77` | Brute Force | `T1110` | `401`, `401`, then `200` on `/wp-login.php` | **High**: possible account takeover |
+
+### Output: AI incident response report (excerpt)
+
+````markdown
+# Incident Response Report
+**TLP:AMBER** · Incident ID: SENT-2026-1024-001 · Generated: 2026-10-24 02:20 UTC
+
+## 1. Executive Breach Summary
+Two external sources attacked the public web application within three minutes.
+One source ran SQL injection and a path traversal request that both returned
+HTTP 200 with substantial response sizes, which indicates probable data and file
+disclosure. A second source guessed credentials against /wp-login.php and
+received a 200 after two failures, consistent with a successful login.
+Treat the application and its credentials as potentially compromised.
+
+## 2. Attacker Geo / ASN Matrix
+| IP            | Country | City      | ASN      | ISP / Org        | Vectors                |
+|---------------|---------|-----------|----------|------------------|------------------------|
+| 203.0.113.45  | DE      | Frankfurt | AS64496  | Example Hosting  | SQLi, LFI              |
+| 192.0.2.77    | NL      | Amsterdam | AS64497  | Example Cloud    | Credential brute force |
+
+## 3. Perimeter Containment
+```bash
+# ufw
+sudo ufw deny from 203.0.113.45 to any
+sudo ufw deny from 192.0.2.77 to any
+
+# iptables
+sudo iptables -I INPUT -s 203.0.113.45 -j DROP
+sudo iptables -I INPUT -s 192.0.2.77 -j DROP
+```
+
+## 4. Code-Level & WAF Patches
+**Fix the injection (parameterized query):**
+```python
+cursor.execute("SELECT * FROM products WHERE id = %s", (product_id,))
+```
+
+**ModSecurity rules:**
+```apache
+SecRule ARGS|REQUEST_URI "@rx (?i)(?:union\s+select|'\s*or\s+1\s*=\s*1)" \
+    "id:1000001,phase:2,t:none,t:urlDecodeUni,deny,status:403,log,\
+    msg:'SQL injection attempt (MITRE T1190)',tag:'attack-sqli'"
+
+SecRule REQUEST_URI|ARGS "@rx (?:\.\./|\.\.\\)" \
+    "id:1000002,phase:2,t:none,t:urlDecodeUni,deny,status:403,log,\
+    msg:'Path traversal attempt (MITRE T1083)',tag:'attack-lfi'"
+```
+
+## 5. Recommended Follow-up
+Rotate credentials for any account that logged in from 192.0.2.77, review
+database and file access logs, and verify whether /etc/passwd was readable.
+````
+
+---
+
+## 👨‍💻 Author
+
+**Jyotipriyo Saha**
+Cybersecurity builder focused on defensive security and automated threat detection.
+
+[![GitHub](https://img.shields.io/badge/GitHub-@sjyotipriyo--droid-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/sjyotipriyo-droid)
+
+---
+
+<div align="center">
+
+**If SentinelAI helped you spot an attack, consider giving the repo a ⭐**
+
+[Try the Live Dashboard](https://sentinel-ai-theta-cyan.vercel.app/) · [View the Source](https://github.com/sjyotipriyo-droid/SentinelAI)
+
+</div>
